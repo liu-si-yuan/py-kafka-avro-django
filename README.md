@@ -1,5 +1,5 @@
-Django (if you like), Kafka, Avro (if you like)
-==================
+Python, Kafka, Avro (if you like), Django (if you like)
+======================================================
 
 (*optional*) Django, integration with kafka, (*optionally*) with avro .avsc files
 
