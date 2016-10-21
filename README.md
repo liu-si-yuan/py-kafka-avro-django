@@ -1,7 +1,7 @@
-Django Kafka, Avro
+Django (if you like), Kafka, Avro (if you like)
 ==================
 
-(optional*) Django, integration with kafka, (optionally*) with avro .avsc files
+(*optional*) Django, integration with kafka, (*optionally*) with avro .avsc files
 
 Simple services that __consumes__ or __produces__ data from and to a kafka instance.
 Optionally, you are able to encode and decode json data into binary serialized form with avro .avsc files.
