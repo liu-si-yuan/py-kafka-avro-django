@@ -10,16 +10,31 @@ A simple KafkaConsumerService and KafkaProducerService that you dependency injec
 
 ```
 KAFKA_CONFIG = {
-    'BROKERS': 'localhost:8092',
+    'KAFKA_BROKERS': 'localhost:8092',
     'AVRO_PATH': '/path/to/avro/avsc/files/',#    'AVRO_PATH': None,
 }
+```
+
+__using django__
+
+```
+from django.conf import settings
+service = KafkaConsumerService(config=settings.KAFKA_CONFIG)
+```
+
+__override with environment variables__
+
+```
+KAFKA_OFFSET='earliest'
+AVRO_PATH='/path/to/*.avsc'
+KAFKA_BROKERS='localhost:2181'
 ```
 
 Consumer
 --------
 
 ```
-from django-kafka-avro.services import KafkaConsumerservice
+from pykavdjang import KafkaConsumerservice
 
 service = KafkaConsumerService(config=KAFKA_CONFIG)
 topic = 'MyKafkaTopic'
@@ -41,7 +56,7 @@ Producer
 --------
 
 ```
-from django-kafka-avro.services import KafkaProducerService
+from pykavdjang import KafkaProducerService
 service = KafkaProducerService(config=KAFKA_CONFIG)
 topic = 'MyKafkaTopic'
 data = json.load('/path/to/data.json') # or json data from somwhere else *db etc*
