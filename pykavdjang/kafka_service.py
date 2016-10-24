@@ -27,6 +27,12 @@ class BaseKafkaService(object):
         self.group_id = 'dgl-consumer-%s-%s' % (settings.PROJECT_ENVIRONMENT, os.getenv('USER'))
 
     def _decode(self, msg, schema):
+        if schema is None:
+            #
+            # No schema defined must be plain json
+            #
+            return msg
+
         bytes_reader = io.BytesIO(msg.value)
         decoder = avro.io.BinaryDecoder(bytes_reader)
         reader = avro.io.DatumReader(schema)
@@ -37,11 +43,18 @@ class BaseKafkaService(object):
         Read the passed in schema or try to guess the schema
         based on the topic name
         """
+        if self.avro_path is None:
+            return None
+
         schema = '%s.avsc' % topic if schema is None else schema
         avro_path = os.path.join(self.avro_path, schema)
         return avro.schema.parse(open(avro_path, "rb").read())
 
     def _writer(self, schema):
+        schema = self._schema
+        if schema is None:
+            return None, None, None
+
         writer = avro.io.DatumWriter(self._schema)
         bytes_writer = io.BytesIO()
         encoder = avro.io.BinaryEncoder(bytes_writer)
@@ -99,10 +112,11 @@ class KafkaProducerService(BaseKafkaService):
         Loop over json data and write to binary and then send
         """
         writer, bytes_writer, encoder = self._writer()
-
-        for msg in data:
-            writer.write(msg, encoder)
-
-        raw_bytes = bytes_writer.getvalue()
+        if writer is None and bytes_writer is None and encoder is None:
+            raw_bytes = json.dumps(data)
+        else:
+            for msg in data:
+                writer.write(msg, encoder)
+            raw_bytes = bytes_writer.getvalue()
 
         return self._transmit(topic, raw_bytes)

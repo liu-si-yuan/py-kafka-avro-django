@@ -8,6 +8,13 @@ Optionally, you are able to encode and decode json data into binary serialized f
 
 A simple KafkaConsumerService and KafkaProducerService that you dependency inject settings into.
 
+Install
+-------
+
+1. **on mac:** brew install snappy; **on ubuntu/debian:** apt-get install libsnappy-dev
+3. **on windows**: buy a mac and join the real world.
+
+
 ```
 KAFKA_CONFIG = {
     'KAFKA_BROKERS': 'localhost:8092',
