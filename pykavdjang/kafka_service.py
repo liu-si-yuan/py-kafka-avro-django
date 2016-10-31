@@ -1,3 +1,4 @@
+import io
 import os
 import avro.io
 import avro.schema
@@ -23,8 +24,8 @@ class BaseKafkaService(object):
         except TypeError:
             raise Exception('KAFKA_BROKERS must be a list')
 
-        self.client_id = 'dgl-%s-%s' % (settings.PROJECT_ENVIRONMENT, os.getenv('USER'))
-        self.group_id = 'dgl-consumer-%s-%s' % (settings.PROJECT_ENVIRONMENT, os.getenv('USER'))
+        self.client_id = 'dgl-%s-%s' % (config.get('PROJECT_ENVIRONMENT','development'), os.getenv('USER'))
+        self.group_id = 'dgl-consumer-%s-%s' % (config.get('PROJECT_ENVIRONMENT','development'), os.getenv('USER'))
 
     def _decode(self, msg, schema):
         if schema is None:
@@ -85,12 +86,12 @@ class KafkaConsumerService(BaseKafkaService):
                               schema=schema)
 
         for message in self.consumer:
-            try:
-                json_msg = self._decode(msg=message,
-                                        schema=schema)
-            except Exception as e:
-                logger.error('Exception decoding Kafka Message: %s' % e)
-                json_msg = {}
+            # try:
+            json_msg = self._decode(msg=message, schema=schema)
+            # except Exception as e:
+            #     logger.error('Exception decoding Kafka Message: %s' % e)
+            #     import pdb;pdb.set_trace()
+            #     json_msg = {}
 
             yield (json_msg, message)
 
