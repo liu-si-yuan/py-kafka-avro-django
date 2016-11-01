@@ -17,7 +17,7 @@ Install
 
 ```
 KAFKA_CONFIG = {
-    'KAFKA_BROKERS': 'localhost:8092',
+    'BROKERS': 'localhost:8092',
     'AVRO_PATH': '/path/to/avro/avsc/files/',#    'AVRO_PATH': None,
 }
 ```
