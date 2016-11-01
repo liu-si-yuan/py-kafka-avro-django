@@ -15,14 +15,14 @@ class BaseKafkaService(object):
     provided for by converting from avro files
     """
     def __init__(self, config={}):
-        self.auto_offset_reset = config.get('KAFKA_OFFSET', os.getenv('KAFKA_OFFSET', 'earliest'))
+        self.auto_offset_reset = config.get('OFFSET', os.getenv('KAFKA_OFFSET', 'earliest'))
         self.avro_path = config.get('AVRO_PATH', os.getenv('KAFKA_AVRO_PATH', None))
-        self.brokers = config.get('KAFKA_BROKERS', os.getenv('KAFKA_BROKERS', 'localhost:2181'))
+        self.brokers = config.get('BROKERS', os.getenv('KAFKA_BROKERS', 'localhost:2181'))
 
         try:
             iter(self.brokers)
         except TypeError:
-            raise Exception('KAFKA_BROKERS must be a list')
+            raise Exception('BROKERS must be a list')
 
         self.client_id = 'dgl-%s-%s' % (config.get('PROJECT_ENVIRONMENT','development'), os.getenv('USER'))
         self.group_id = 'dgl-consumer-%s-%s' % (config.get('PROJECT_ENVIRONMENT','development'), os.getenv('USER'))
