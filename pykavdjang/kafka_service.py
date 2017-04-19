@@ -25,7 +25,8 @@ class BaseKafkaService(object):
             raise Exception('BROKERS must be a list')
 
         self.client_id = 'dgl-%s-%s' % (config.get('PROJECT_ENVIRONMENT','development'), os.getenv('USER'))
-        self.group_id = 'dgl-consumer-%s-%s' % (config.get('PROJECT_ENVIRONMENT','development'), os.getenv('USER'))
+        self.group_id = os.getenv('CONSUMER_GROUP_ID', 'dgl-consumer-%s-%s' % (config.get('PROJECT_ENVIRONMENT','development'), os.getenv('USER')))
+        print self.group_id
 
     def _decode(self, msg, schema):
         if schema is None:
@@ -49,7 +50,10 @@ class BaseKafkaService(object):
 
         schema = '%s.avsc' % topic if schema is None else schema
         avro_path = os.path.join(self.avro_path, schema)
-        return avro.schema.parse(open(avro_path, "rb").read())
+
+        if os.path.exists(avro_path):
+            return avro.schema.parse(open(avro_path, "rb").read())
+        return None
 
     def _writer(self, schema):
         schema = self._schema
@@ -87,7 +91,10 @@ class KafkaConsumerService(BaseKafkaService):
 
         for message in self.consumer:
             # try:
-            json_msg = self._decode(msg=message, schema=schema)
+            json_msg = {}
+
+            if schema:
+                json_msg = self._decode(msg=message, schema=schema)
             # except Exception as e:
             #     logger.error('Exception decoding Kafka Message: %s' % e)
             #     import pdb;pdb.set_trace()
