@@ -83,7 +83,7 @@ class KafkaConsumerService(BaseKafkaService):
                                       client_id=self.client_id,
                                       group_id=self.group_id,
                                       auto_offset_reset=self.auto_offset_reset,
-                                      enable_auto_commit=False,
+                                      enable_auto_commit=True,
                                       bootstrap_servers=self.brokers)
 
         schema = self._schema(topic=topic,
